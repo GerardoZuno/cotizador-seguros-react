@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./components/Header";
 import styled from "@emotion/styled";
 import Formulario from "./components/Formulario";
+import Resumen from "./components/Resumen";
+import Resultado from "./components/Resultado";
 
 const Contenedor = styled.div`
   max-width: 600px;
@@ -12,15 +14,28 @@ const Contenedor = styled.div`
 const ContenedorFormulario = styled.div`
   background-color: #fff;
   padding: 3rem;
-  
 `;
 
 function App() {
+  const [resumen, setResumen] = useState({
+    cotizacion: 0,
+    data:{
+      marca: '',
+      year: '',
+      plan: ''
+    }
+   
+  });
+
+  const { data }= resumen
+
+
   return (
     <Contenedor>
       <Header title="Cotizador de Seguros" />
-      <ContenedorFormulario >
-       <Formulario />
+      <ContenedorFormulario>
+        <Formulario setResumen={setResumen} />
+        <Resumen data={data} />
       </ContenedorFormulario>
     </Contenedor>
   );
