@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from '@emotion/styled'
 
 const Campo = styled.div`
@@ -42,14 +42,64 @@ const Boton = styled.button`
  }
 
 `
+const Error = styled.div`
+  background-color: red;
+  color: #FFF;
+  padding: 1rem;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+`
 
 
 function Formulario() {
+
+  const [data, setData] = useState({
+      marca: '',
+      year: '',
+      plan: 'completo'
+  })
+
+  const {marca, year, plan} = data
+
+  const obtenerDatos = (e) => {
+         setData({
+             ...data,
+             [e.target.name] : e.target.value
+         })
+  }
+
+  const [error, setError] = useState(false)
+
+  const cotizarSubmit = (e) => {
+      e.preventDefault()
+      if(!marca.trim() || !year.trim() || !plan.trim()) {
+         setError(true)
+         console.log('fracaso')
+
+         return
+      }
+      setError(false)
+      console.log('exito')
+
+  }
+
   return (
-    <form>
+    <form onSubmit={cotizarSubmit}>
+        {
+            error && (
+                <Error>
+                    Todos los campos son Obligatorios
+                </Error>
+            )
+        }
       <Campo>
         <Label>MARCA</Label>
-        <Select name="" id="">
+        <Select 
+        name="marca"
+        value={marca}
+        onChange={obtenerDatos}
+        >
           <option value="">--Seleccione</option>
           <option value="americano">--Americano</option>
           <option value="europeo">--Europeo</option>
@@ -59,7 +109,11 @@ function Formulario() {
 
       <Campo>
         <Label>Año</Label>
-        <Select>
+        <Select
+        name="year"
+        value={year}
+        onChange={obtenerDatos}
+        >
           <option value="">-- Seleccione --</option>
           <option value="2021">2021</option>
           <option value="2020">2020</option>
@@ -78,17 +132,24 @@ function Formulario() {
           <InputRadio
            type="radio"
             name="plan"
-            value="basico"/>
+            value="basico"
+            checked={plan === "basico"}
+            onChange={obtenerDatos}
+            />
             Basico
 
            <InputRadio
            type="radio"
             name="plan"
-            value="basico"/>
+            value="completo"
+            checked={plan === "completo"}
+            onChange={obtenerDatos}
+
+            />
             Completo
       </Campo>
 
-      <Boton type="button">Cotizar</Boton>
+      <Boton type="submit">Cotizar</Boton>
     </form>
   );
 }
