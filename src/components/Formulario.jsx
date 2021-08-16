@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 import { obtenerDiferenciaYear, obtenerMarca, calcularSeguro } from "../helper";
 
 const Campo = styled.div`
@@ -21,10 +22,7 @@ const Select = styled.select`
   -webkit-appearance: none;
 `;
 
-const Input = styled.div`
- 
-
-`;
+const Input = styled.div``;
 
 const InputRadio = styled.input`
   margin: 0 1rem;
@@ -56,7 +54,7 @@ const Error = styled.div`
   margin-bottom: 10px;
 `;
 
-function Formulario({ setResumen }) {
+function Formulario({ setResumen, setLoading }) {
   const [data, setData] = useState({
     marca: "",
     year: "",
@@ -78,7 +76,6 @@ function Formulario({ setResumen }) {
     e.preventDefault();
     if (!marca.trim() || !year.trim() || !plan.trim()) {
       setError(true);
-      console.log("fracaso");
 
       return;
     }
@@ -87,19 +84,20 @@ function Formulario({ setResumen }) {
 
     const diferencia = obtenerDiferenciaYear(year);
     result -= (diferencia * 3 * result) / 1000;
-    console.log(result);
 
     result = obtenerMarca(marca) * result;
 
-    console.log(result);
-
     result = parseFloat(calcularSeguro(plan) * result).toFixed(2);
-    console.log(result);
+    setLoading(true);
 
-    setResumen({
-      cotizacion: result,
-      data,
-    });
+    setTimeout(() => {
+      setLoading(false);
+
+      setResumen({
+        cotizacion: Number(result),
+        data,
+      });
+    }, 3000);
   };
 
   return (
@@ -133,8 +131,7 @@ function Formulario({ setResumen }) {
       </Campo>
       <Campo>
         <Input>
-        <Label htmlFor="">Plan</Label>
-
+          <Label htmlFor="">Plan</Label>
           <InputRadio
             type="radio"
             name="plan"
@@ -150,15 +147,17 @@ function Formulario({ setResumen }) {
             checked={plan === "completo"}
             onChange={obtenerDatos}
           />
-        
-        Completo
-
+          Completo
         </Input>
       </Campo>
 
       <Boton type="submit">Cotizar</Boton>
     </form>
   );
+}
+Formulario.propTypes = {
+  setResumen: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired, 
 }
 
 export default Formulario;
