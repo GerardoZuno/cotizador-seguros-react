@@ -1,16 +1,17 @@
-import React, {useState} from "react";
-import styled from '@emotion/styled'
+import React, { useState } from "react";
+import styled from "@emotion/styled";
 import { obtenerDiferenciaYear, obtenerMarca, calcularSeguro } from "../helper";
 
 const Campo = styled.div`
   display: flex;
+
   margin-bottom: 1rem;
   align-items: center;
-`
+`;
 
 const Label = styled.label`
   flex: 0 0 100px;
-`
+`;
 
 const Select = styled.select`
   display: block;
@@ -18,109 +19,95 @@ const Select = styled.select`
   padding: 1rem;
   border: 1px solid #1e1e1e;
   -webkit-appearance: none;
-`
+`;
 
-const InputRadio= styled.input`
+const Input = styled.div`
+ 
+
+`;
+
+const InputRadio = styled.input`
   margin: 0 1rem;
-`
+`;
 const Boton = styled.button`
- background-color: #00838F;
- font-size: 1rem;
- width: 100%;
- padding: 1rem;
- color: #FFF;
- text-transform: uppercase;
- font-weight: bold;
- border: none;
- transition: background-color .3s ease;
- margin-top: 2rem;
-  
- &:hover{
-     background-color: #26C6DA;
-     margin-top: 2rem;
-     cursor: pointer;
-     
- }
+  background-color: #00838f;
+  font-size: 1rem;
+  width: 100%;
+  padding: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.3s ease;
+  margin-top: 2rem;
 
-`
+  &:hover {
+    background-color: #26c6da;
+    margin-top: 2rem;
+    cursor: pointer;
+  }
+`;
 const Error = styled.div`
   background-color: red;
-  color: #FFF;
+  color: #fff;
   padding: 1rem;
   width: 100%;
   text-align: center;
   margin-bottom: 10px;
-`
+`;
 
-
-function Formulario({setResumen}) {
-
+function Formulario({ setResumen }) {
   const [data, setData] = useState({
-      marca: '',
-      year: '',
-      plan: 'completo'
-  })
+    marca: "",
+    year: "",
+    plan: "completo",
+  });
 
-  const {marca, year, plan} = data
+  const { marca, year, plan } = data;
 
   const obtenerDatos = (e) => {
-         setData({
-             ...data,
-             [e.target.name] : e.target.value
-         })
-  }
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const cotizarSubmit = (e) => {
-      e.preventDefault()
-      if(!marca.trim() || !year.trim() || !plan.trim()) {
-         setError(true)
-         console.log('fracaso')
+    e.preventDefault();
+    if (!marca.trim() || !year.trim() || !plan.trim()) {
+      setError(true);
+      console.log("fracaso");
 
-         return
-      }
-      setError(false)
-      let result = 2000;
-      
-      const diferencia = obtenerDiferenciaYear(year)
-      result -= (( diferencia * 3) * result) / 1000
-      console.log(result)
+      return;
+    }
+    setError(false);
+    let result = 2000;
 
+    const diferencia = obtenerDiferenciaYear(year);
+    result -= (diferencia * 3 * result) / 1000;
+    console.log(result);
 
-      result = obtenerMarca(marca) * result
+    result = obtenerMarca(marca) * result;
 
-      console.log(result)
+    console.log(result);
 
-      result = parseFloat(calcularSeguro(plan) * result).toFixed(2)
-      console.log(result)
+    result = parseFloat(calcularSeguro(plan) * result).toFixed(2);
+    console.log(result);
 
-      setResumen({
-          cotizacion: result,
-          data
-      })
-
-
-
-
-  }
+    setResumen({
+      cotizacion: result,
+      data,
+    });
+  };
 
   return (
     <form onSubmit={cotizarSubmit}>
-        {
-            error && (
-                <Error>
-                    Todos los campos son Obligatorios
-                </Error>
-            )
-        }
+      {error && <Error>Todos los campos son Obligatorios</Error>}
       <Campo>
         <Label>MARCA</Label>
-        <Select 
-        name="marca"
-        value={marca}
-        onChange={obtenerDatos}
-        >
+        <Select name="marca" value={marca} onChange={obtenerDatos}>
           <option value="">--Seleccione</option>
           <option value="americano">--Americano</option>
           <option value="europeo">--Europeo</option>
@@ -130,11 +117,7 @@ function Formulario({setResumen}) {
 
       <Campo>
         <Label>Año</Label>
-        <Select
-        name="year"
-        value={year}
-        onChange={obtenerDatos}
-        >
+        <Select name="year" value={year} onChange={obtenerDatos}>
           <option value="">-- Seleccione --</option>
           <option value="2021">2021</option>
           <option value="2020">2020</option>
@@ -149,25 +132,28 @@ function Formulario({setResumen}) {
         </Select>
       </Campo>
       <Campo>
-          <Label htmlFor="">Plan</Label>
+        <Input>
+        <Label htmlFor="">Plan</Label>
+
           <InputRadio
-           type="radio"
+            type="radio"
             name="plan"
             value="basico"
             checked={plan === "basico"}
             onChange={obtenerDatos}
-            />
-            Basico
-
-           <InputRadio
-           type="radio"
+          />
+          Basico
+          <InputRadio
+            type="radio"
             name="plan"
             value="completo"
             checked={plan === "completo"}
             onChange={obtenerDatos}
+          />
+        
+        Completo
 
-            />
-            Completo
+        </Input>
       </Campo>
 
       <Boton type="submit">Cotizar</Boton>

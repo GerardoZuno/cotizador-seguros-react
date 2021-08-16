@@ -27,7 +27,7 @@ function App() {
    
   });
 
-  const { data }= resumen
+  const { cotizacion, data }= resumen
 
 
   return (
@@ -36,6 +36,7 @@ function App() {
       <ContenedorFormulario>
         <Formulario setResumen={setResumen} />
         <Resumen data={data} />
+        <Resultado cotizacion={cotizacion}/>
       </ContenedorFormulario>
     </Contenedor>
   );
